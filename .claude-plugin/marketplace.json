@@ -1,0 +1,3 @@
+git add -f .claude-plugin/
+git commit -m "add marketplace config"
+git push
