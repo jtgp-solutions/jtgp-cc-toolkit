@@ -58,10 +58,10 @@ Everything in `.jtgp/config.json`:
 ## Multi-engagement example
 
 ```
-workspace/turn2c/    → /jtgp:setup → github + outline + gh + pt-br docs + java-spring
-workspace/tivit/     → /jtgp:setup → gitlab + outline + glab + pt-br docs + java-spring
-workspace/vonex/     → /jtgp:setup → notion + notion  + gh  + pt-br docs + react-ts
-workspace/new-co/    → /jtgp:setup → any combination
+workspace/project1/    → /jtgp:setup → github + outline + gh + pt-br docs + java-spring
+workspace/project2/     → /jtgp:setup → gitlab + outline + glab + pt-br docs + java-spring
+workspace/project3/     → /jtgp:setup → notion + notion  + gh  + pt-br docs + react-ts
+workspace/new-project/    → /jtgp:setup → any combination
 ```
 
 ## Components
