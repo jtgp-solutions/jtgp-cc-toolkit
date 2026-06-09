@@ -1,0 +1,22 @@
+{
+  "name": "jtgp-core",
+  "version": "0.1.0",
+  "description": "Spec-anchored development workflow with adversarial planning, autonomous execution, and evidence-based verification.",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "spec-driven",
+    "autonomous",
+    "code-review"
+  ],
+  "commands": "./skills",
+  "agents": [
+    "./agents/planner.md",
+    "./agents/critic.md",
+    "./agents/developer.md",
+    "./agents/tester.md",
+    "./agents/investigator.md",
+    "./agents/quality-gate.md"
+  ],
+  "hooks": "./hooks/hooks.json"
+}
