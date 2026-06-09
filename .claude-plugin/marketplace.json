@@ -1,3 +1,13 @@
-git add -f .claude-plugin/
-git commit -m "add marketplace config"
-git push
+{
+  "name": "jtgp",
+  "displayName": "JTGP Claude Code Toolkit",
+  "description": "Private plugin marketplace for spec-anchored, autonomous engineering workflows across multiple engagements.",
+  "owner": "jtgp-solutions",
+  "plugins": [
+    {
+      "name": "jtgp-core",
+      "source": "./plugins/jtgp-core",
+      "description": "Core workflow: spec-anchored phasing, adversarial planning, autonomous execution, evidence-based verification."
+    }
+  ]
+}
