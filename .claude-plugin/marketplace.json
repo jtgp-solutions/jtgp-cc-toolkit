@@ -1,0 +1,15 @@
+{
+  "name": "jtgp",
+  "displayName": "JTGP Claude Code Toolkit",
+  "description": "Private plugin marketplace for spec-anchored, autonomous engineering workflows across multiple engagements. Adapts to any engagement via interactive setup.",
+  "owner": {
+    "name": "jtgp-solutions"
+  },
+  "plugins": [
+    {
+      "name": "jtgp-core",
+      "source": "./plugins/jtgp-core",
+      "description": "Core workflow: setup, spec-anchored phasing, adversarial planning, autonomous execution, evidence-based verification. Adapts to GitHub/GitLab/Notion, Outline/Notion KB, and any language configuration."
+    }
+  ]
+}
