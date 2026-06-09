@@ -2,7 +2,10 @@
   "name": "jtgp-core",
   "version": "0.1.0",
   "description": "Spec-anchored development workflow with adversarial planning, autonomous execution, and evidence-based verification. Built for senior engineers operating across multiple concurrent engagements.",
-  "author": "JTGP Solutions",
+  "author": {
+    "name": "JTGP Solutions",
+    "url": "https://github.com/jtgp-solutions"
+  },
   "license": "MIT",
   "keywords": [
     "workflow",
@@ -12,6 +15,8 @@
     "multi-engagement"
   ],
   "commands": "./skills",
-  "agents": "./agents",
+  "agents": {
+    "path": "./agents"
+  },
   "hooks": "./hooks/hooks.json"
 }
