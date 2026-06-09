@@ -2,7 +2,9 @@
   "name": "jtgp",
   "displayName": "JTGP Claude Code Toolkit",
   "description": "Private plugin marketplace for spec-anchored, autonomous engineering workflows across multiple engagements.",
-  "owner": "jtgp-solutions",
+  "owner": {
+    "name": "jtgp-solutions"
+  },
   "plugins": [
     {
       "name": "jtgp-core",
