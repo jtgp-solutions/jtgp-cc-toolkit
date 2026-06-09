@@ -14,7 +14,6 @@
     "multi-engagement",
     "code-review"
   ],
-  "commands": "./skills",
   "agents": [
     "./agents/planner.md",
     "./agents/critic.md",
