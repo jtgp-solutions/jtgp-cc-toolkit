@@ -1,6 +1,6 @@
 ---
-name: spec
-description: Create or evolve the living specification for an issue. This is the spec-anchored source of truth — created before planning, kept current through implementation, and read by any future session to resume. Syncs with the knowledge base (Outline/Notion) if configured. Auto-invoke when starting a new issue, or when the user says "spec", "start issue", or references an issue ID with no existing spec.
+name: jtgp:spec
+description: Create or evolve the living specification for an issue. Automatically fetches from the issue tracker and searches the knowledge base (Outline/Notion) for related specs, confirms with the user before writing. All artifacts in a single unified folder. Auto-invoke when starting a new issue, or when the user says "spec", "start issue", or references an issue ID with no existing spec.
 ---
 
 # Skill: spec
@@ -11,48 +11,87 @@ Read `.jtgp/config.json`. If it does not exist, stop and run `/jtgp:setup` first
 
 Load engagement config: issue tracker, KB provider, specs root, language settings.
 
-All output (spec content, questions to the user) must use the language configured in `lang_docs`. Terminal messages to the user use `lang_terminal`.
+Terminal messages: `lang_terminal`. Spec content: `lang_docs`.
 
-## Resolve the issue
+## Unified folder structure
 
-If an issue ID is provided, fetch its details from the configured issue tracker:
+The primary identifier is always the issue tracker ID (e.g. `PRJ-XXX`).
+All artifacts live under one folder — no split between specs and qa:
+
+```
+{specs_root}/{ISSUE-ID}-{short-title}/
+├── SPEC.md           ← living source of truth
+├── CONTEXT.md        ← session state anchor
+├── PLAN.md
+├── VERIFICATION.md
+└── qa/               ← evidence, curls, test data, Figma notes
+    └── evidencias/
+```
+
+For new issues: ignore `tasks_root` — everything goes here.
+For resume on old issues: still check `tasks_root` for legacy context.
+
+## Step 1 — Fetch the issue
+
+Fetch from the configured tracker:
+- `jira` → fetch via Jira MCP. Extract: title, description, acceptance criteria, linked SPEC-XXX references, Figma links.
 - `github` → `gh issue view {ID} --repo {issue_tracker_project}`
-- `gitlab` → `glab issue view {ID} --repo {issue_tracker_project}`
-- `jira` → fetch via Jira MCP if available, otherwise ask user to describe inline
-- `notion` → fetch via Notion MCP if available, otherwise ask user to describe inline
+- `gitlab` → `glab issue view {ID}`
+- `notion` → fetch via Notion MCP
 - `manual` → ask user to describe inline
 
-If no issue ID is provided, ask using selectable options:
-1. Enter an issue ID (fetch from tracker)
-2. Describe the issue inline
-3. This is a smoke test — generate a placeholder spec
+If the Jira issue references a SPEC-XXX spec ID, extract it — needed in Step 2.
 
-## Knowledge base sync (if configured)
+If fetch fails: inform the user, ask them to describe inline, and proceed.
 
-If `kb_sync_on_start` is true and a KB provider is configured:
-- Search the KB for an existing spec or prior context for this issue
-- If found, load it as starting context — do not duplicate, evolve
-- Note: KB sync is best-effort; proceed if the MCP call fails
+## Step 2 — Search knowledge base
 
-## Sizing
+If `kb_provider` is `outline` or `notion` and `kb_sync_on_start` is true:
 
-Classify the issue honestly. State the classification at the top of the spec:
+Search the KB for related content. Try in order:
+1. SPEC-XXX ID found in Step 1 (if any)
+2. PRJ-XXX ID
+3. Key terms from the issue title
+
+For each result found, show: document title, last updated date, brief summary.
+Present as selectable options and wait for the user to confirm which to use.
+
+If nothing found: inform clearly — "No related spec found in Outline for PRJ-XXX / SPEC-XXX. You can describe the requirements inline or check Outline manually." Then ask how to proceed.
+
+**Never proceed without user confirmation of KB content.**
+
+## Step 3 — Build and confirm the spec draft
+
+Using issue details (Step 1) and confirmed KB content (Step 2):
+- Extract requirements from Jira acceptance criteria and KB spec
+- Classify each as p0/p1/p2
+- Identify obvious edge cases from the evidence
+- Apply YAGNI: speculative scope goes to "Out of scope / deferred"
+
+Show the draft to the user before writing:
+> "Here is the spec draft for {ISSUE-ID}. Does this look correct?"
+Options: yes / adjust / start over
+
+If adjust: apply corrections and show again. Repeat until confirmed.
+
+## Step 4 — Sizing
+
+After the spec is confirmed, classify:
 - **small** — localized change, single file or tight cluster, no new integration
 - **medium** — multiple files or one new integration, moderate domain logic
 - **large** — cross-cutting, new architecture surface, external integration, or security surface
 
-Sizing drives critique rounds and agent dispatch depth downstream. Do not inflate.
+State the classification and brief rationale at the top of SPEC.md.
 
-## YAGNI
+## Step 5 — Write to disk
 
-Every requirement must trace to evidence from the issue. Speculative scope goes to the "Out of scope / deferred" section, not the requirements list.
+Only after user confirms the draft:
 
-## Output
+Create `{specs_root}/{ISSUE-ID}-{short-title}/SPEC.md`
+Create `{specs_root}/{ISSUE-ID}-{short-title}/CONTEXT.md`
+Create `{specs_root}/{ISSUE-ID}-{short-title}/qa/` directory
 
-Create `{specs_root}/{ISSUE-ID}/SPEC.md` using the SPEC template.
-Create `{specs_root}/{ISSUE-ID}/CONTEXT.md` using the CONTEXT template.
+## After writing
 
-If a `tasks_root` is configured, note it in CONTEXT.md as the path for QA artifacts.
-
-After writing, summarize the spec in 3–4 lines and direct the user to `/jtgp:plan {ISSUE-ID}`.
+Summarize the spec in 3–4 lines. Direct the user to `/jtgp:plan {ISSUE-ID}`.
 Do not start planning or writing code in this skill.
