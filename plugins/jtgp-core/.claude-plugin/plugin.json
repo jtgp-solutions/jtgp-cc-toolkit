@@ -1,6 +1,6 @@
 {
   "name": "jtgp-core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Spec-anchored development workflow with adversarial planning, autonomous execution, and evidence-based verification. Adapts to any engagement via /jtgp:setup.",
   "author": {
     "name": "JTGP Solutions",
