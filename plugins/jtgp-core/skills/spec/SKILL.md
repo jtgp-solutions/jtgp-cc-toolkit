@@ -1,97 +1,105 @@
 ---
 name: jtgp:spec
-description: Create or evolve the living specification for an issue. Automatically fetches from the issue tracker and searches the knowledge base (Outline/Notion) for related specs, confirms with the user before writing. All artifacts in a single unified folder. Auto-invoke when starting a new issue, or when the user says "spec", "start issue", or references an issue ID with no existing spec.
+description: Create or evolve the living specification for an issue. Starts by asking the goal of the issue to determine the right flow — implementation, bug fix, investigation, rule validation, or other. Fetches from the issue tracker, searches the KB, and confirms the draft with you before writing. Auto-invoke when starting a new issue or when an issue ID is referenced with no existing spec.
 ---
 
 # Skill: spec
 
 ## Preconditions
 
-Read `.jtgp/config.json`. If it does not exist, stop and run `/jtgp:setup` first.
-
-Load engagement config: issue tracker, KB provider, specs root, language settings.
-
+Read `.jtgp/config.json`. If missing, stop and run `/jtgp:setup` first.
+Load: issue tracker, KB provider, specs root, language settings.
 Terminal messages: `lang_terminal`. Spec content: `lang_docs`.
 
-## Unified folder structure
+## Step 0 — Understand the goal
 
-The primary identifier is always the issue tracker ID (e.g. `PRJ-XXX`).
-All artifacts live under one folder — no split between specs and qa:
+Before fetching anything, ask the user what they need. Present as selectable options:
 
 ```
-{specs_root}/{ISSUE-ID}-{short-title}/
-├── SPEC.md           ← living source of truth
-├── CONTEXT.md        ← session state anchor
-├── PLAN.md
-├── VERIFICATION.md
-└── qa/               ← evidence, curls, test data, Figma notes
-    └── evidencias/
+What is the goal of this issue?
+
+1. Implement (feature / task)
+   Full flow: spec → plan → critique → execute → verify → PR
+
+2. Fix a bug
+   Full flow with emphasis on evidence and root cause confirmation.
+
+3. Investigate / query data
+   Spec only: findings report. No plan, no execute, no PR.
+
+4. Validate a business rule
+   Spec + KB lookup: confirm implementation vs functional spec.
+
+5. Other
+   Describe what you need and I will suggest the appropriate flow.
 ```
 
-For new issues: ignore `tasks_root` — everything goes here.
-For resume on old issues: still check `tasks_root` for legacy context.
+Record the selected goal in CONTEXT.md as `goal:` field.
+Adapt subsequent steps to the goal — for option 3 or 4, make clear no PLAN.md or execute will be produced; the output is a findings report in SPEC.md.
 
 ## Step 1 — Fetch the issue
 
 Fetch from the configured tracker:
-- `jira` → fetch via Jira MCP. Extract: title, description, acceptance criteria, linked SPEC-XXX references, Figma links.
+- `jira` → Jira MCP. Extract: title, description, acceptance criteria, linked spec IDs, Figma links.
 - `github` → `gh issue view {ID} --repo {issue_tracker_project}`
 - `gitlab` → `glab issue view {ID}`
-- `notion` → fetch via Notion MCP
+- `notion` → Notion MCP
 - `manual` → ask user to describe inline
 
-If the Jira issue references a SPEC-XXX spec ID, extract it — needed in Step 2.
-
+If the issue references a linked spec ID in the KB, extract it — needed in Step 2.
 If fetch fails: inform the user, ask them to describe inline, and proceed.
 
 ## Step 2 — Search knowledge base
 
-If `kb_provider` is `outline` or `notion` and `kb_sync_on_start` is true:
+If `kb_provider` is configured and `kb_sync_on_start` is true:
 
-Search the KB for related content. Try in order:
-1. SPEC-XXX ID found in Step 1 (if any)
-2. PRJ-XXX ID
+Search for related content. Try in order:
+1. Linked spec ID found in Step 1 (if any)
+2. Issue ID
 3. Key terms from the issue title
 
-For each result found, show: document title, last updated date, brief summary.
-Present as selectable options and wait for the user to confirm which to use.
+For each result: show document title, last updated date, brief summary.
+Present as selectable options and wait for confirmation before using any content.
 
-If nothing found: inform clearly — "No related spec found in Outline for PRJ-XXX / SPEC-XXX. You can describe the requirements inline or check Outline manually." Then ask how to proceed.
+If nothing found: inform clearly. Ask how to proceed (describe inline or check KB manually).
 
 **Never proceed without user confirmation of KB content.**
 
 ## Step 3 — Build and confirm the spec draft
 
-Using issue details (Step 1) and confirmed KB content (Step 2):
-- Extract requirements from Jira acceptance criteria and KB spec
-- Classify each as p0/p1/p2
-- Identify obvious edge cases from the evidence
-- Apply YAGNI: speculative scope goes to "Out of scope / deferred"
+Using issue details and confirmed KB content:
+- For **implement / bug**: extract requirements, classify p0/p1/p2, identify edge cases, apply YAGNI
+- For **investigate / rule validation**: extract the question being answered, the evidence sources, what "done" looks like for the findings
 
-Show the draft to the user before writing:
+Show the draft to the user:
 > "Here is the spec draft for {ISSUE-ID}. Does this look correct?"
 Options: yes / adjust / start over
 
-If adjust: apply corrections and show again. Repeat until confirmed.
+Repeat until confirmed.
 
 ## Step 4 — Sizing
 
-After the spec is confirmed, classify:
-- **small** — localized change, single file or tight cluster, no new integration
+After spec is confirmed, classify:
+- **small** — localized change, single file, no new integration
 - **medium** — multiple files or one new integration, moderate domain logic
 - **large** — cross-cutting, new architecture surface, external integration, or security surface
 
-State the classification and brief rationale at the top of SPEC.md.
+State classification and rationale at the top of SPEC.md.
+For investigation/rule validation goals: sizing is always `small` — no plan depth needed.
 
 ## Step 5 — Write to disk
 
-Only after user confirms the draft:
+Only after user confirms:
 
-Create `{specs_root}/{ISSUE-ID}-{short-title}/SPEC.md`
-Create `{specs_root}/{ISSUE-ID}-{short-title}/CONTEXT.md`
-Create `{specs_root}/{ISSUE-ID}-{short-title}/qa/` directory
+```
+{specs_root}/{ISSUE-ID}-{short-title}/
+├── SPEC.md
+├── CONTEXT.md       ← includes goal: field
+└── qa/              ← for evidence, curls, screenshots
+```
 
 ## After writing
 
-Summarize the spec in 3–4 lines. Direct the user to `/jtgp:plan {ISSUE-ID}`.
+For **implement / bug**: summarize in 3–4 lines, direct to `/jtgp:plan {ISSUE-ID}`.
+For **investigate / rule validation**: summarize findings so far, direct to `/jtgp:verify` or tell user findings are ready — no plan or execute needed.
 Do not start planning or writing code in this skill.
