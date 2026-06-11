@@ -51,6 +51,19 @@ If fetch fails: inform the user, ask them to describe inline, and proceed.
 
 ## Step 2 — Search knowledge base
 
+Search for related context in this order. Do not skip steps.
+
+### 2a — Local specs (always, regardless of KB provider)
+
+Search `{specs_root}/` for prior issues in the same domain:
+- Glob for `{kb_local_patterns}` files (e.g. `knowledge-base-*.md`, `DECISIONS.md`) in any subfolder
+- Glob for SPEC.md and PLAN.md files whose folder name contains key terms from the issue title or module name
+- Read any matches and extract relevant decisions, patterns, and findings
+
+This step is **mandatory before any escalation**. Local specs often contain implementation decisions not yet synced to the remote KB — skipping them is the primary cause of unnecessary escalations.
+
+### 2b — Remote KB (if configured)
+
 If `kb_provider` is configured and `kb_sync_on_start` is true:
 
 Search for related content. Try in order:
@@ -62,6 +75,16 @@ For each result: show document title, last updated date, brief summary.
 Present as selectable options and wait for confirmation before using any content.
 
 If nothing found: inform clearly. Ask how to proceed (describe inline or check KB manually).
+
+### 2c — Exhaustion rule (before any escalation)
+
+**Before proposing escalation to a person, confirm that ALL of the following have been checked:**
+- [ ] Local specs (`specs_root`) searched for the affected module and related business rules
+- [ ] Remote KB searched (if configured)
+- [ ] Git history of the affected files checked for relevant commit messages or prior decisions
+- [ ] Related specs referenced in found documents also read (follow the trail)
+
+Only escalate when the question genuinely has no answer in any of these sources. If you find a partial answer, state what you found and what specific gap remains — do not escalate a question the sources already answer.
 
 **Never proceed without user confirmation of KB content.**
 
