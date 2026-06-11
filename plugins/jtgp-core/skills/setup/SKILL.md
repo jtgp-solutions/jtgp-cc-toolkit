@@ -73,6 +73,15 @@ Ask: "Which knowledge base does this engagement use?"
 
 ---
 
+### 7.5. Local knowledge base patterns (optional)
+> **What it is:** Filename patterns for local knowledge files that live in your specs directory — decisions, architecture notes, or prior research that you or the team wrote directly in the workspace. When the plugin searches for context before escalating a question, it will look for these files in `{specs_root}/` alongside the remote KB.
+> **Why it matters:** Some teams document implementation decisions locally (not in Outline/Notion) as files inside spec folders. Without this, the plugin skips them and may propose unnecessary escalations.
+> **Suggestion:** `["knowledge-base-*.md", "DECISIONS.md", "plano-mestre.md"]` — or leave blank if all knowledge lives in the remote KB.
+
+Ask: "Do you have local knowledge files in your specs directory? If so, what are their filename patterns? (comma-separated globs, or leave blank)"
+
+---
+
 ### 8. PR tool
 > **What it is:** The CLI used to create and manage pull/merge requests.
 > **Options:** `gh` (GitHub CLI) · `glab` (GitLab CLI) · `manual` (you open PRs yourself)
@@ -206,4 +215,15 @@ Suggest: `conventional`
 4. Display a summary table of what was configured.
 5. Tell the user: "Setup complete. Run `/jtgp:spec {ISSUE-ID}` to start your first issue."
 
-If the user skips an optional field (tasks_root, kb details), leave it as an empty string — do not invent values.
+If the user skips an optional field (tasks_root, kb details, kb_local_patterns), leave it as an empty string or empty array — do not invent values.
+
+## Update mode (`/jtgp:setup --update`)
+
+When called with `--update`, do not re-ask all questions. Instead:
+1. Read the existing `.jtgp/config.json`.
+2. Identify fields that are missing or empty (fields added in newer plugin versions).
+3. Ask only those missing fields — one at a time, with the same descriptions and suggestions as above.
+4. Merge the answers into the existing config without touching fields that already have values.
+5. Tell the user which fields were added.
+
+This allows the config to stay current as the plugin evolves without forcing a full re-setup.
