@@ -13,6 +13,7 @@
   "kb_space_id": "",
   "kb_sync_on_start": true,
   "kb_sync_on_close": true,
+  "kb_local_patterns": [],
 
   "pr_tool": "",
   "pr_base_branch": "",
