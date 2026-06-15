@@ -50,5 +50,12 @@ The commit message must not mention Claude, AI, or any AI tool.
 ## Stop at PR boundary
 
 Do not open the PR. Set CONTEXT.md status to `awaiting-verification`.
+
+Before any `gh` command (push, pr create, pr view), if `gh_user` is set in config:
+```bash
+gh auth switch --user {gh_user}
+```
+This ensures the correct GitHub account is active for this engagement, regardless of what other sessions may have switched to.
+
 Report phases completed, files changed, test results.
 Direct the user to `/jtgp:verify {ISSUE-ID}`.
