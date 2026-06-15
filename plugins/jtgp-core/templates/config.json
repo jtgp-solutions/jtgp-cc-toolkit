@@ -18,6 +18,7 @@
   "pr_tool": "",
   "pr_base_branch": "",
   "pr_auto_draft": false,
+  "gh_user": "",
 
   "specs_root": "specs",
   "tasks_root": "",
