@@ -14,6 +14,11 @@ Language for verification report: `lang_docs`.
 Language for terminal messages: `lang_terminal`.
 Build tool from config: used to run the test suite.
 
+If `gh_user` is set in config and `pr_tool` is `gh`, run before any `gh` command:
+```bash
+gh auth switch --user {gh_user}
+```
+
 ## Evidence requirement
 
 For every p0 and p1 acceptance item, require fresh runtime evidence:
