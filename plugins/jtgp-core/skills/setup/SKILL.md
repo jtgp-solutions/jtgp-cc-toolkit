@@ -90,6 +90,15 @@ Ask: "Which PR tool does this engagement use?"
 
 ---
 
+### 8.5. GitHub CLI user (conditional — only if pr_tool is `gh`)
+> **What it is:** The GitHub account username to use when running `gh` commands in this engagement. Required when you have multiple GitHub accounts configured in `gh auth` (e.g. personal + work). The plugin runs `gh auth switch --user {gh_user}` before any PR operation to ensure the right account is active.
+> **Why it matters:** `gh` has a single active account globally — if you switch workspaces without switching the account, PRs and API calls go to the wrong org.
+> **Suggestion:** run `gh auth status` to see your configured accounts and pick the one for this engagement. Leave blank if you only have one account.
+
+Ask: "Which `gh` account should this engagement use? (run `gh auth status` to check — leave blank if only one account)"
+
+---
+
 ### 9. Base branch for PRs
 > **What it is:** The branch that PRs target. Used when generating PR descriptions and running diffs.
 > **Suggestion:** `main`, `master`, `develop` — check the repo default
