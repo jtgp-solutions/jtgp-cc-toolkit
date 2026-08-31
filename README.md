@@ -66,8 +66,9 @@ workspace/new-project/    → /jtgp:setup → any combination
 
 ## Components
 
-- **skills/** — 10 workflow commands namespaced `/jtgp:*`
-- **agents/** — planner, critic, developer, tester, investigator, quality-gate (Opus for reasoning, Sonnet for execution)
+- **skills/** — 11 workflow commands namespaced `/jtgp:*`
+- **agents/** — planner, critic, developer, tester, investigator, quality-gate (Opus for reasoning, Sonnet for execution, Fable as escalation)
+- **reference/** — `model-matrix.md`: which model each agent runs on, when to escalate, and why effort comes before model
 - **hooks/** — git identity guard (reads from config), no-comments guard (respects config), spec-sync reminder
 - **lib/** — `context.sh` loads config into env vars for hooks
 - **templates/** — `SPEC.md`, `CONTEXT.md`, `config.json`
