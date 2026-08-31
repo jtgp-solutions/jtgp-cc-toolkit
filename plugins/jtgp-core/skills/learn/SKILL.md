@@ -39,6 +39,22 @@ When proposing, ask with a yes/no selectable:
 
 Only proceed if confirmed.
 
+### Closed-loop triggers (G7) — the cycle's only way of improving itself
+
+Two events must **always** be classified through this skill. They are the ground truth about where the gates are blind, and letting them pass unexamined is what keeps the same defect class recurring.
+
+**1. A human reviewer finds something in your own PR.** For each finding, classify it as exactly one of:
+
+- **(a) A gate existed and did not run.** The rule was there; the process failed. Do not write a new rule — fix the gate that was skippable, and record which one.
+- **(b) No gate covered it.** Propose a rule, and say which gate should carry it: a critic lens, a planner section, a verification requirement.
+- **(c) Not a defect.** Style preference, disagreement, or a misreading by the reviewer. Record nothing.
+
+The distinction matters: (a) is a discipline problem and more rules make it worse; (b) is a coverage problem and is exactly what rules are for.
+
+**2. A new issue traced back to one of your merged fixes.** Run the `investigator` agent for the real root cause — override it to `fable` here, since the first root cause was already wrong once (`reference/model-matrix.md`), then ask the only question that generalises: **which lens would have caught this before the merge?** That lens becomes a critic lens or a planner check. A fix that generates an issue and produces no lens has taught the cycle nothing.
+
+Record both in the rule's rationale with the concrete cost — the PR number, the card, what it broke, what it took to retract. A rule with a real price attached is followed; an abstract one is read once and forgotten.
+
 ## Step 1 — Classify the correction
 
 Distinguish a standing rule from a one-off preference:

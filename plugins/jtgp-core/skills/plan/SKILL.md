@@ -15,7 +15,7 @@ Language for plan content: `lang_docs`. Language for terminal messages: `lang_te
 
 ## Dispatch
 
-Delegate to the `planner` agent with the spec content, code style, test framework, and build tool from config as context. The planner is model-intensive — this is where plan quality is determined.
+Delegate to the `planner` agent with the spec content, code style, test framework, and build tool from config as context. The planner is model-intensive — this is where plan quality is determined. It runs on `opus` at high effort; see `reference/model-matrix.md` before changing that.
 
 ## Plan structure
 

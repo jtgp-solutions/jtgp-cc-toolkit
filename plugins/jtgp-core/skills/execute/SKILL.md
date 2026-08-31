@@ -30,6 +30,7 @@ Create a worktree named for the issue under `{worktrees_root}/{ISSUE-ID}/` using
 - Zero inline comments if `code_no_comments` is true.
 - Use TodoWrite to track each phase.
 - Delegate implementation to `developer` agent. Delegate tests to `tester` agent. Run both in parallel when the signature is stable.
+- Model selection follows `reference/model-matrix.md`. Agents run on their frontmatter default; override `developer` to `fable` at effort `xhigh` only for a full autonomous run on a large or high-blast-radius issue.
 - After each phase, update CONTEXT.md.
 
 ## Self-review before declaring done
